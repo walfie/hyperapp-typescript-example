@@ -4,16 +4,18 @@ interface State {
   count: number;
 };
 
-const state: State = {
+const defaultState: State = {
   count: 0
 };
 
 interface Actions {
+  getState: () => (state: State) => ActionResult<State>;
   down: (value: number) => (state: State) => ActionResult<State>;
   up: (value: number) => (state: State) => ActionResult<State>;
 };
 
 const actions: ActionsType<State, Actions> = {
+  getState: () => (state) => { return state; },
   down: (value: number) => (state) => {
     return { count: state.count - value };
   },
@@ -30,5 +32,12 @@ const view: View<State, Actions> = (state, actions) => (
   </div>
 );
 
-app(state, actions, view, document.body);
+const state = (module.hot.data || {}).state as State || defaultState;
+const application = app(state, actions, view, document.body);
+
+if (module.hot) {
+  module.hot.dispose(() => {
+    module.hot.data.state = application.getState();
+  });
+}
 

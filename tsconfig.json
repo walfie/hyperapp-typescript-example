@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "jsx": "react",
-    "jsxFactory": "h"
+    "jsxFactory": "h",
+    "types": ["parcel-env"]
   }
 }
 
